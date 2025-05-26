@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPI 模拟器 (图形化)</title>
+     <!-- 添加 Favicon -->
+    <link rel="icon" href="https://raw.gitmirror.com/Elichenx/bloc-image/master/img/%E5%A4%B4%E5%83%8F.jpg" type="image/jpeg">
+     <!-- 为 Apple 设备添加图标 -->
+    <link rel="apple-touch-icon" href="https://raw.gitmirror.com/Elichenx/bloc-image/master/img/%E5%A4%B4%E5%83%8F.jpg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="simulator-container">
+        <header>
+            <h1>SPI 模拟器 (主从通信 - 图形化)</h1>
+        </header>
+
+        <div class="two-column-layout">
+            <!-- 左侧列 -->
+            <div class="left-column">
+                <section class="panel config-panel">
+                    <h2>配置</h2>
+                    <div class="control-group">
+                        <label>时钟极性 (CPOL):</label>
+                        <div class="operation-selector">
+                            <div class="radio-group">
+                                <input type="radio" id="cpol0" name="cpol" value="0" checked>
+                                <label for="cpol0">CPOL=0 (空闲低电平)</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="cpol1" name="cpol" value="1">
+                                <label for="cpol1">CPOL=1 (空闲高电平)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>时钟相位 (CPHA):</label>
+                        <div class="operation-selector">
+                            <div class="radio-group">
+                                <input type="radio" id="cpha0" name="cpha" value="0" checked>
+                                <label for="cpha0">CPHA=0 (第一边沿采样)</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="cpha1" name="cpha" value="1">
+                                <label for="cpha1">CPHA=1 (第二边沿采样)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="masterData">主机发送数据 (Hex):</label>
+                        <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="masterData" value="A5" maxlength="2" size="4">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="slaveData">从机发送数据 (Hex):</label>
+                        <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="slaveData" value="3C" maxlength="2" size="4">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="speed">模拟速度 (ms/step):</label>
+                        <input type="number" id="speed" value="150" min="10" step="10" size="5">
+                    </div>
+                    <div class="control-group action-buttons">
+                        <button id="startButton">开始传输</button>
+                        <span id="status">状态: 空闲</span>
+                    </div>
+                </section>
+
+                <section class="panel log-panel">
+                    <h2>模拟日志</h2>
+                    <textarea id="logOutput" rows="10" readonly></textarea>
+                </section>
+            </div>
+
+            <!-- 右侧列 -->
+            <div class="right-column">
+                <section class="panel display-panel">
+                    <h2>当前状态</h2>
+                    <div class="display-content">
+                        <div class="signal-status">
+                            <p>当前字节: <code id="currentByte">--</code></p>
+                            <div class="signal-lines">
+                                <div id="sclk" class="line low">SCLK</div>
+                                <div id="mosi" class="line low">MOSI</div>
+                                <div id="miso" class="line low">MISO</div>
+                                <div id="ss" class="line high">SS/CS</div>
+                            </div>
+                        </div>
+                        <div class="bit-status">
+                            <p>当前位:</p>
+                            <div id="bitDisplay">
+                                <div class="bit-labels">
+                                    <span class="bit-label">7</span><span class="bit-label">6</span><span class="bit-label">5</span><span class="bit-label">4</span><span class="bit-label">3</span><span class="bit-label">2</span><span class="bit-label">1</span><span class="bit-label">0</span>
+                                </div>
+                                <div class="bit-indicators">
+                                    <div class="bit" id="bit7"></div>
+                                    <div class="bit" id="bit6"></div>
+                                    <div class="bit" id="bit5"></div>
+                                    <div class="bit" id="bit4"></div>
+                                    <div class="bit" id="bit3"></div>
+                                    <div class="bit" id="bit2"></div>
+                                    <div class="bit" id="bit1"></div>
+                                    <div class="bit" id="bit0"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel sequence-diagram-panel">
+                    <h2>序列图</h2>
+                    <div id="sequenceDiagramContainer">
+                        <canvas id="sequenceCanvas"></canvas>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div> <!-- .simulator-container -->
+
+    <script src="script.js"></script>
+</body>
+</html>

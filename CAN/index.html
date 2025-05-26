@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAN 模拟器 (图形化)</title>
+     <!-- 添加 Favicon -->
+    <link rel="icon" href="https://raw.gitmirror.com/Elichenx/bloc-image/master/img/%E5%A4%B4%E5%83%8F.jpg" type="image/jpeg">
+     <!-- 为 Apple 设备添加图标 -->
+    <link rel="apple-touch-icon" href="https://raw.gitmirror.com/Elichenx/bloc-image/master/img/%E5%A4%B4%E5%83%8F.jpg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="simulator-container">
+        <header>
+            <h1>CAN 模拟器 (总线通信 - 图形化)</h1>
+        </header>
+        
+        <!-- 将CAN帧结构放在标题下方，占据两列宽度 -->
+        <section class="panel frame-structure-panel full-width">
+            <h2>CAN帧结构</h2>
+            <div id="frameStructure">
+                <!-- 此部分将由JS动态填充 -->
+            </div>
+        </section>
+
+        <div class="two-column-layout">
+            <!-- 左侧列 -->
+            <div class="left-column">
+                <section class="panel config-panel">
+                    <h2>配置</h2>
+                    <div class="control-group">
+                        <label>CAN 帧格式:</label>
+                        <div class="can-format-selector">
+                            <div class="radio-group">
+                                <input type="radio" id="standard" name="canFormat" value="standard" checked>
+                                <label for="standard">标准帧 (11位标识符)</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="extended" name="canFormat" value="extended">
+                                <label for="extended">扩展帧 (29位标识符)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>帧类型:</label>
+                        <div class="frame-type-selector">
+                            <div class="radio-group">
+                                <input type="radio" id="data" name="frameType" value="data" checked>
+                                <label for="data">数据帧</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="remote" name="frameType" value="remote">
+                                <label for="remote">远程帧</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="messageId">报文ID (Hex):</label>
+                        <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="messageId" value="123" maxlength="8" size="10">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="dataLength">数据长度:</label>
+                        <select id="dataLength">
+                            <option value="0">0 字节</option>
+                            <option value="1">1 字节</option>
+                            <option value="2">2 字节</option>
+                            <option value="3">3 字节</option>
+                            <option value="4">4 字节</option>
+                            <option value="5">5 字节</option>
+                            <option value="6">6 字节</option>
+                            <option value="7">7 字节</option>
+                            <option value="8" selected>8 字节</option>
+                        </select>
+                    </div>
+                    <div class="control-group data-field">
+                        <label for="dataBytes">数据 (Hex):</label>
+                        <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="dataBytes" value="A1B2C3D4E5F60708" maxlength="16" size="20">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="bitRate">波特率:</label>
+                        <select id="bitRate">
+                            <option value="125">125 kbps</option>
+                            <option value="250">250 kbps</option>
+                            <option value="500" selected>500 kbps</option>
+                            <option value="1000">1 Mbps</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="speed">模拟速度 (ms/step):</label>
+                        <input type="number" id="speed" value="150" min="10" step="10" size="5">
+                    </div>
+                    <div class="control-group action-buttons">
+                        <button id="startButton">开始传输</button>
+                        <span id="status">状态: 空闲</span>
+                    </div>
+                </section>
+
+                <section class="panel log-panel">
+                    <h2>模拟日志</h2>
+                    <textarea id="logOutput" rows="10" readonly></textarea>
+                </section>
+            </div>
+
+            <!-- 右侧列 -->
+            <div class="right-column">
+                <section class="panel display-panel">
+                    <h2>当前状态</h2>
+                    <div class="display-content">
+                        <div class="signal-status">
+                            <p>传输状态: <code id="currentFrameStatus">--</code></p>
+                            <div class="signal-lines">
+                                <div id="canHigh" class="line recessive">CAN_H (高电平线)</div>
+                                <div id="canLow" class="line recessive">CAN_L (低电平线)</div>
+                                <div id="differential" class="line recessive">差分信号 (CAN_H - CAN_L)</div>
+                            </div>
+                        </div>
+                        <div class="bit-status">
+                            <p>当前位:</p>
+                            <div id="bitDisplay">
+                                <div class="bit-group">
+                                    <div id="bitType">--</div>
+                                    <div class="bit-indicators">
+                                        <div class="bit" id="currentBit"></div>
+                                    </div>
+                                    <div id="bitExplanation"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel sequence-diagram-panel">
+                    <h2>序列图</h2>
+                    <div id="sequenceDiagramContainer">
+                        <canvas id="sequenceCanvas"></canvas>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div> <!-- .simulator-container -->
+
+    <script src="script.js"></script>
+</body>
+</html>

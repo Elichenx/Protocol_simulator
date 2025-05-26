@@ -1,0 +1,333 @@
+/* --- General Styles & Variables --- */
+:root {
+    --bg-color: #f0f2f5;
+    --panel-bg: #ffffff;
+    --border-color: #d9d9d9;
+    --text-color: #333;
+    --label-color: #555;
+    --primary-color: #1890ff; /* Blue */
+    --success-color: #52c41a; /* Green */
+    --error-color: #f5222d;   /* Red */
+    --signal-high-bg: #adebad; /* 高电平状态 - 绿色 */
+    --signal-high-text: #096009;
+    --signal-low-bg: #ffb3b3;  /* 低电平状态 - 红色 */
+    --signal-low-text: #8b0000;
+    --bit-inactive-bg: #e0e0e0;
+    --bit-active-border: #333;
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.simulator-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: transparent; /* Let body bg show */
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #444;
+}
+
+/* --- Layout --- */
+.two-column-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.left-column, .right-column {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* --- Panels --- */
+.panel {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+}
+
+.panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    color: var(--primary-color);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* --- Configuration Panel --- */
+.config-panel .control-group {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.config-panel label {
+    width: 160px; /* Adjust as needed */
+    flex-shrink: 0;
+    color: var(--label-color);
+    font-weight: 500;
+    padding-right: 10px;
+    margin-top: 5px; /* Align with radio buttons */
+}
+
+.config-panel input[type="text"],
+.config-panel input[type="number"],
+.config-panel select {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.config-panel input[type="text"]:focus,
+.config-panel input[type="number"]:focus,
+.config-panel select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.operation-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 6px;
+}
+
+.input-prefix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden; /* Clip corners */
+}
+
+.input-prefix span {
+    padding: 8px 8px;
+    background-color: #fafafa;
+    border-right: 1px solid var(--border-color);
+    color: var(--label-color);
+}
+
+.input-prefix input {
+    border: none !important; /* Override default border */
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    flex-grow: 1;
+    min-width: 50px;
+}
+
+.action-buttons button {
+    padding: 8px 18px;
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    margin-right: 15px;
+}
+
+.action-buttons button:hover {
+    background-color: #3fad46;
+}
+
+.action-buttons button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.action-buttons button.stop-button { /* Style for when it acts as Stop */
+    background-color: var(--error-color);
+}
+
+.action-buttons button.stop-button:hover {
+    background-color: #cf1322;
+}
+
+#status {
+    font-weight: bold;
+    color: var(--label-color);
+}
+
+/* --- Display Panel --- */
+.display-panel .display-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start; /* Align items top */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.signal-status, .bit-status {
+    flex-basis: 45%; /* Roughly half width */
+    margin-bottom: 15px; /* Space if wrapping */
+    text-align: center;
+}
+
+.signal-status p, .bit-status p {
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--label-color);
+}
+
+.signal-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.line {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    border: 1px solid transparent; /* Reserve space for border */
+}
+
+.line.high {
+    background-color: var(--signal-high-bg);
+    color: var(--signal-high-text);
+    border-color: #73d173;
+}
+
+.line.low {
+    background-color: var(--signal-low-bg);
+    color: var(--signal-low-text);
+    border-color: #ff8a8a;
+}
+
+/* --- Bit Display --- */
+#bitDisplay {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 15px;
+    background-color: #fafafa;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.bit-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.bit-label {
+    display: inline-block;
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: var(--label-color);
+}
+
+.bit-indicators {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+
+.bit {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bit-inactive-bg);
+    vertical-align: middle;
+    border-radius: 4px;
+    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+/* Bit States */
+.bit.active {
+    border: 1px solid var(--bit-active-border);
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.3);
+}
+
+.bit.high {
+    background-color: var(--signal-high-bg);
+}
+
+.bit.low {
+    background-color: var(--signal-low-bg);
+}
+
+/* --- Log Panel --- */
+#logOutput {
+    width: 98%;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    background-color: #f9f9f9;
+    resize: vertical;
+    min-height: 100px; /* Minimum height */
+}
+
+/* --- Sequence Diagram Panel --- */
+#sequenceDiagramContainer {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden;
+    background-color: #fdfdfd;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px 0; /* Padding top/bottom, no side padding for canvas edge */
+    min-height: 300px; /* 增加最小高度从200px到300px */
+    height: auto; /* 允许自适应高度 */
+    position: relative; /* For potential absolute positioning inside */
+}
+
+#sequenceCanvas {
+    display: block; /* Remove extra space below canvas */
+    /* Width and height set dynamically by JS */
+    margin-bottom: 10px; /* 增加底部边距 */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .config-panel .control-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .config-panel label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .signal-status, .bit-status {
+        flex-basis: 100%;
+    }
+}

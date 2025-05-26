@@ -1,0 +1,407 @@
+/* --- General Styles & Variables --- */
+:root {
+    --bg-color: #f0f2f5;
+    --panel-bg: #ffffff;
+    --border-color: #d9d9d9;
+    --text-color: #333;
+    --label-color: #555;
+    --primary-color: #1890ff; /* Blue */
+    --success-color: #52c41a; /* Green */
+    --error-color: #f5222d;   /* Red */
+    --signal-dominant-bg: #ffb3b3;  /* 显性状态 - 红色 */
+    --signal-dominant-text: #8b0000;
+    --signal-recessive-bg: #adebad; /* 隐性状态 - 绿色 */
+    --signal-recessive-text: #096009;
+    --bit-inactive-bg: #e0e0e0;
+    --bit-active-border: #333;
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.simulator-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: transparent; /* Let body bg show */
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #444;
+}
+
+/* --- Layout --- */
+.two-column-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.left-column, .right-column {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* 添加全宽面板样式，用于CAN帧结构 */
+.full-width {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+/* --- Panels --- */
+.panel {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+}
+
+.panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    color: var(--primary-color);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* --- Configuration Panel --- */
+.config-panel .control-group {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.config-panel label {
+    width: 160px; /* Adjust as needed */
+    flex-shrink: 0;
+    color: var(--label-color);
+    font-weight: 500;
+    padding-right: 10px;
+    margin-top: 5px; /* Align with radio buttons */
+}
+
+.config-panel input[type="text"],
+.config-panel input[type="number"],
+.config-panel select {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.config-panel input[type="text"]:focus,
+.config-panel input[type="number"]:focus,
+.config-panel select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.can-format-selector, 
+.frame-type-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 6px;
+}
+
+.input-prefix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden; /* Clip corners */
+}
+
+.input-prefix span {
+    padding: 8px 8px;
+    background-color: #fafafa;
+    border-right: 1px solid var(--border-color);
+    color: var(--label-color);
+}
+
+.input-prefix input {
+    border: none !important; /* Override default border */
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    flex-grow: 1;
+    min-width: 50px;
+}
+
+.action-buttons button {
+    padding: 8px 18px;
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    margin-right: 15px;
+}
+
+.action-buttons button:hover {
+    background-color: #3fad46;
+}
+
+.action-buttons button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.action-buttons button.stop-button { /* Style for when it acts as Stop */
+    background-color: var(--error-color);
+}
+
+.action-buttons button.stop-button:hover {
+    background-color: #cf1322;
+}
+
+#status {
+    font-weight: bold;
+    color: var(--label-color);
+}
+
+/* --- Display Panel --- */
+.display-panel .display-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start; /* Align items top */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.signal-status, .bit-status {
+    flex-basis: 45%; /* Roughly half width */
+    margin-bottom: 15px; /* Space if wrapping */
+    text-align: center;
+}
+
+.signal-status p, .bit-status p {
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--label-color);
+}
+
+#currentFrameStatus {
+    font-weight: bold;
+    font-size: 1.1em;
+    background-color: #e6f7ff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #91d5ff;
+    color: #0050b3;
+    margin: 0 5px;
+}
+
+.signal-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.line {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    border: 1px solid transparent; /* Reserve space for border */
+}
+
+.line.dominant {
+    background-color: var(--signal-dominant-bg);
+    color: var(--signal-dominant-text);
+    border-color: #ff8a8a;
+}
+
+.line.recessive {
+    background-color: var(--signal-recessive-bg);
+    color: var(--signal-recessive-text);
+    border-color: #73d173;
+}
+
+/* --- Bit Display --- */
+#bitDisplay {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    background-color: #fafafa;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.bit-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#bitType {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: var(--primary-color);
+}
+
+#bitExplanation {
+    font-size: 0.9em;
+    color: var(--label-color);
+}
+
+.bit-indicators {
+    margin: 8px 0;
+}
+
+.bit {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bit-inactive-bg);
+    vertical-align: middle;
+    border-radius: 50%; /* Make bits circular for CAN display */
+    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+/* Bit States */
+.bit.active {
+    border: 1px solid var(--bit-active-border);
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.3);
+}
+
+.bit.dominant {
+    background-color: var(--signal-dominant-bg);
+}
+
+.bit.recessive {
+    background-color: var(--signal-recessive-bg);
+}
+
+/* --- Log Panel --- */
+#logOutput {
+    width: 98%;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    background-color: #f9f9f9;
+    resize: vertical;
+    min-height: 100px; /* Minimum height */
+}
+
+/* --- Sequence Diagram Panel --- */
+#sequenceDiagramContainer {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden;
+    background-color: #fdfdfd;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px 0; /* Padding top/bottom, no side padding for canvas edge */
+    min-height: 200px; /* Ensure container has some height */
+    position: relative; /* For potential absolute positioning inside */
+}
+
+#sequenceCanvas {
+    display: block; /* Remove extra space below canvas */
+    /* Width and height set dynamically by JS */
+}
+
+/* --- Frame Structure Panel --- */
+.frame-structure-panel {
+    overflow-x: auto;
+}
+
+#frameStructure {
+    display: flex;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden; /* Hide rounded corners overflow */
+    min-width: max-content; /* Ensure it doesn't shrink below content size */
+}
+
+.frame-field {
+    padding: 10px;
+    text-align: center;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    min-width: 60px;
+}
+
+.frame-field:last-child {
+    border-right: none;
+}
+
+.field-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.field-bits {
+    font-size: 0.8em;
+    color: var(--label-color);
+}
+
+.field-value {
+    margin-top: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+/* Different field types */
+.field-sof { background-color: #e6f7ff; }
+.field-id { background-color: #fff7e6; }
+.field-rtr { background-color: #f6ffed; }
+.field-ide { background-color: #fcf5ff; }
+.field-r0 { background-color: #fff2f0; }
+.field-dlc { background-color: #f0f5ff; }
+.field-data { background-color: #fffbe6; }
+.field-crc { background-color: #f9f0ff; }
+.field-ack { background-color: #e6fffb; }
+.field-eof { background-color: #fff0f6; }
+.field-ifs { background-color: #f5f5f5; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .config-panel .control-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .config-panel label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .signal-status, .bit-status {
+        flex-basis: 100%;
+    }
+}

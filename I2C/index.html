@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I2C 模拟器 (图形化)</title>
+     <!-- 添加 Favicon -->
+    <link rel="icon" href="https://raw.gitmirror.com/Elichenx/bloc-image/master/img/%E5%A4%B4%E5%83%8F.jpg" type="image/jpeg">
+     <!-- 为 Apple 设备添加图标 -->
+    <link rel="apple-touch-icon" href="https://raw.gitmirror.com/Elichenx/bloc-image/master/img/%E5%A4%B4%E5%83%8F.jpg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="simulator-container">
+        <header>
+            <h1>I2C 模拟器 (主控通信 - 图形化)</h1>
+        </header>
+
+        <div class="two-column-layout">
+            <!-- 左侧列 -->
+            <div class="left-column">
+                <section class="panel config-panel">
+                    <h2>配置</h2>
+                    <div class="control-group">
+                        <label>操作类型:</label>
+                        <div class="operation-selector">
+                            <div class="radio-group">
+                                <input type="radio" id="write" name="operationType" value="write" checked>
+                                <label for="write">写操作 (主控→从机)</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="read" name="operationType" value="read">
+                                <label for="read">读操作 (主控←从机)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="address">从机地址 (7-bit, Hex):</label>
+                        <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="address" value="4A" maxlength="2" size="4">
+                        </div>
+                    </div>
+                    <div class="control-group write-field">
+                        <label for="data">发送数据 (8-bit, Hex):</label>
+                         <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="data" value="D2" maxlength="2" size="4">
+                         </div>
+                    </div>
+                    <div class="control-group read-field">
+                        <label for="responseData">从机响应数据 (8-bit, Hex):</label>
+                        <div class="input-prefix">
+                            <span>0x</span>
+                            <input type="text" id="responseData" value="B3" maxlength="2" size="4">
+                        </div>
+                    </div>
+                    <div class="control-group read-field">
+                        <label for="ackType">主控确认类型:</label>
+                        <select id="ackType">
+                            <option value="nack" selected>NACK (结束读取)</option>
+                            <option value="ack">ACK (多字节读取)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="speed">模拟速度 (ms/step):</label>
+                        <input type="number" id="speed" value="150" min="10" step="10" size="5">
+                    </div>
+                    <div class="control-group action-buttons">
+                        <button id="startButton">开始传输</button>
+                        <span id="status">状态: 空闲</span>
+                    </div>
+                </section>
+
+                <section class="panel log-panel">
+                    <h2>模拟日志</h2>
+                    <textarea id="logOutput" rows="10" readonly></textarea>
+                </section>
+            </div>
+
+            <!-- 右侧列 -->
+            <div class="right-column">
+                <section class="panel display-panel">
+                    <h2>当前状态</h2>
+                    <div class="display-content">
+                        <div class="signal-status">
+                            <p>总线字节: <code id="currentByte">--</code></p>
+                            <div class="signal-lines">
+                                <div id="scl" class="line high">SCL</div>
+                                <div id="sda" class="line high">SDA</div>
+                            </div>
+                        </div>
+                        <div class="bit-status">
+                            <p>当前位:</p>
+                            <div id="bitDisplay">
+                                 <div class="bit-labels">
+                                     <span class="bit-label">7</span><span class="bit-label">6</span><span class="bit-label">5</span><span class="bit-label">4</span><span class="bit-label">3</span><span class="bit-label">2</span><span class="bit-label">1</span><span class="bit-label">0</span><span class="bit-label ack">ACK</span>
+                                 </div>
+                                 <div class="bit-indicators">
+                                    <div class="bit" id="bit7"></div>
+                                    <div class="bit" id="bit6"></div>
+                                    <div class="bit" id="bit5"></div>
+                                    <div class="bit" id="bit4"></div>
+                                    <div class="bit" id="bit3"></div>
+                                    <div class="bit" id="bit2"></div>
+                                    <div class="bit" id="bit1"></div>
+                                    <div class="bit" id="bit0"></div>
+                                    <div class="bit ack" id="bitACK"></div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel sequence-diagram-panel">
+                    <h2>序列图</h2>
+                    <div id="sequenceDiagramContainer">
+                        <canvas id="sequenceCanvas"></canvas>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div> <!-- .simulator-container -->
+
+    <script src="script.js"></script>
+</body>
+</html>
